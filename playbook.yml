@@ -1,0 +1,8 @@
+---
+- name: Provision tncv image
+  hosts: localhost
+  become: true
+  roles:
+    - { role: docker, tags: ['docker'] }
+  vars:
+    - docker_install_compose: false
