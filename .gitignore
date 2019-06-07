@@ -10,3 +10,6 @@ crash.log
 
 # Ansible vendors
 vendor
+
+# Python virtualenv
+venv
