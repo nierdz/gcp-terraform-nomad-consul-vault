@@ -7,6 +7,8 @@ resource "google_compute_instance_template" "tncv" {
 
   network_interface {
     network = "${var.network}"
+    access_config {
+    }
   }
 
   disk {

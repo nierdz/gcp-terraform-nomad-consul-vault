@@ -1,5 +1,5 @@
 resource "google_compute_region_instance_group_manager" "tncv" {
-  name = "tncv-igm"
+  name               = "tncv-igm"
   base_instance_name = "tncv"
   instance_template  = "${google_compute_instance_template.tncv.self_link}"
   region             = "${var.region}"

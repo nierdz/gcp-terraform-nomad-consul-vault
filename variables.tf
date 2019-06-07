@@ -42,7 +42,7 @@ variable access_config {
 }
 
 variable compute_image {
-  default = "debian-9-stretch-v20190514"
+  default = "tncv-image"
 }
 
 variable disk_type {

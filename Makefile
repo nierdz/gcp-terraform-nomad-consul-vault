@@ -30,4 +30,5 @@ install-ansible: ## Install ansible via pip
 		source $(VIRTUALENV_DIR)/bin/activate; \
 		pip install --upgrade setuptools; \
 		pip install -r requirements.txt; \
+		ansible-galaxy install -r requirements.yml -p vendor/roles ; \
 	)

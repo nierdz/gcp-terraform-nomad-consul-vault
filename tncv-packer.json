@@ -15,5 +15,21 @@
       "image_name": "{{ user `image_name` }}",
       "zone": "europe-west1-b"
     }
+  ],
+  "provisioners": [
+    {
+      "type": "file",
+      "source": "./",
+      "destination": "~/"
+    },
+    {
+      "type": "shell",
+      "inline": [
+        "sudo apt update",
+        "sudo apt install -y make",
+        "make install",
+        "venv/bin/ansible-playbook playbook.yml"
+      ]
+    }
   ]
 }
