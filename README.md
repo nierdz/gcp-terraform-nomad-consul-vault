@@ -50,3 +50,8 @@ gsutil versioning set on gs://${GCE_PROJECT}
 ```
 
 To use this bucket, we have [backend.tf](backend.tf)
+
+### Packer to bake image
+```
+packer build -var "image_name=tncv-image" tncv-packer.json
+```
