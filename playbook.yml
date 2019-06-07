@@ -1,8 +1,9 @@
 ---
 - name: Provision tncv image
-  hosts: localhost
+  hosts: nomad_instances
   become: true
   roles:
     - { role: docker, tags: ['docker'] }
+    - { role: nomad, tags: ['nomad'] }
   vars:
     - docker_install_compose: false

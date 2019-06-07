@@ -1,2 +1,2 @@
-[local]
+[nomad_instances]
 localhost ansible_connection=local
