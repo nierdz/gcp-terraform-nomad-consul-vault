@@ -8,7 +8,7 @@ variable "project_name" {
 }
 
 variable "ssh_user" {
-  default = "nierdz"
+  default = "admin"
 }
 
 variable "ssh_pub_key" {

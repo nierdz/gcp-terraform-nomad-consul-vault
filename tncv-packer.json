@@ -2,7 +2,6 @@
   "variables": {
     "account_file": "{{ env `GOOGLE_APPLICATION_CREDENTIALS` }}",
     "project_id": "{{ env `GOOGLE_PROJECT` }}",
-    "ssh_username": "{{ env `USER` }}",
     "image_name": "{{ env `IMAGE_NAME` }}"
   },
   "builders": [
@@ -11,7 +10,7 @@
       "account_file": "{{ user `account_file` }}",
       "project_id": "{{ user `project_id` }}",
       "source_image": "debian-9-stretch-v20190514",
-      "ssh_username": "{{ user `ssh_username` }}",
+      "ssh_username": "admin",
       "image_name": "{{ user `image_name` }}",
       "zone": "europe-west1-b"
     }
