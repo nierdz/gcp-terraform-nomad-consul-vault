@@ -15,6 +15,7 @@ install: ## Install dependencies
 		sudo apt install -y \
 			git \
 			python-apt \
+			python-netaddr \
 			python-pip \
 			python-virtualenv ;\
 	)
