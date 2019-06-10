@@ -2,7 +2,7 @@ resource "google_compute_instance_template" "tncv" {
   name_prefix  = "tncv-"
   machine_type = "${var.machine_type}"
   region       = "${var.region}"
-  tags         = ["allow-ssh"]
+  tags         = ["allow-ssh","consul-server"]
   labels       = "${var.instance_labels}"
 
   network_interface {
