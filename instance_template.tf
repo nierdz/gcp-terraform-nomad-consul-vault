@@ -29,11 +29,6 @@ resource "google_compute_instance_template" "tncv" {
     var.metadata
   )}"
 
-  scheduling {
-    preemptible       = true
-    automatic_restart = false
-  }
-
   lifecycle {
     create_before_destroy = true
   }
