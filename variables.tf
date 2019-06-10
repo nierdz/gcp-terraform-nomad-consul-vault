@@ -17,7 +17,7 @@ variable "ssh_pub_key" {
 
 # Instance template
 variable machine_type {
-  default = "f1-micro"
+  default = "n1-standard-1"
 }
 
 variable target_tags {
