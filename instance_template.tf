@@ -25,7 +25,7 @@ resource "google_compute_instance_template" "tncv" {
   }
 
   metadata = "${merge(
-    map("startup-script", "${var.startup_script}", "sshKeys", "${var.ssh_user}:${file(var.ssh_pub_key)}"),
+    map("startup-script", "${file("${path.module}/scripts/startup.sh")}", "sshKeys", "${var.ssh_user}:${file(var.ssh_pub_key)}"),
     var.metadata
   )}"
 

@@ -61,10 +61,6 @@ variable service_account_scopes {
   ]
 }
 
-variable startup_script {
-  default = ""
-}
-
 variable metadata {
   type    = "map"
   default = {}
