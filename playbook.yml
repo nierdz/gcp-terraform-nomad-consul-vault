@@ -1,0 +1,25 @@
+---
+- name: Provision tncv image
+  hosts: local
+  become: true
+  roles:
+    - { role: docker, tags: ['docker'] }
+    - { role: consul, tags: ['consul'] }
+    - { role: nomad, tags: ['nomad'] }
+  vars:
+    - docker_install_compose: false
+    - consul_group_name: local
+    - consul_node_role: server
+    - consul_bootstrap_expect: true
+    - consul_bootstrap_expect_value: 3
+    - consul_raw_key: "I53CtkQUC/FpxzsoFLxalA=="
+    - consul_gce_auto_join: true
+    - consul_gce_tag: "consul-server"
+    - consul_node_name: "{{ ansible_hostname }}"
+    - nomad_use_consul: true
+    - nomad_bootstrap_expect: 3
+    - nomad_group_name: "{{ consul_group_name }}"
+    - nomad_consul_servers_service_name: "nomad"
+    - nomad_consul_clients_service_name: "nomad-client"
+    - nomad_node_role: "both"
+    - nomad_node_name: "{{ ansible_hostname }}"
