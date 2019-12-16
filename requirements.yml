@@ -3,8 +3,8 @@
   version: v1.9.3
   name: nomad
 
-- src: https://github.com/geerlingguy/ansible-role-docker
-  version: 2.5.2
+- src: https://github.com/nierdz/ansible-role-docker
+  version: v1.0.3
   name: docker
 
 - src: https://github.com/nierdz/ansible-consul.git

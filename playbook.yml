@@ -7,7 +7,6 @@
     - { role: consul, tags: ['consul'] }
     - { role: nomad, tags: ['nomad'] }
   vars:
-    - docker_install_compose: false
     - consul_group_name: local
     - consul_node_role: server
     - consul_bootstrap_expect: true
