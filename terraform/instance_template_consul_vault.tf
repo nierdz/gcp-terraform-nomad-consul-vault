@@ -1,5 +1,5 @@
-resource "google_compute_instance_template" "tncv" {
-  name_prefix  = "tncv-"
+resource "google_compute_instance_template" "consul_vault" {
+  name_prefix  = "consul-vault-"
   machine_type = "${var.machine_type}"
   region       = "${var.region}"
   tags         = ["allow-ssh","consul-server"]
@@ -14,7 +14,7 @@ resource "google_compute_instance_template" "tncv" {
   disk {
     auto_delete  = true
     boot         = true
-    source_image = "${var.compute_image}"
+    source_image = "consul-vault-image"
     type         = "PERSISTENT"
     disk_type    = "${var.disk_type}"
     mode         = "READ_WRITE"
@@ -25,7 +25,7 @@ resource "google_compute_instance_template" "tncv" {
   }
 
   metadata = "${merge(
-    map("startup-script", "${file("${path.module}/scripts/startup.sh")}", "sshKeys", "${var.ssh_user}:${file(var.ssh_pub_key)}"),
+    map("startup-script", "${file("${path.module}/../scripts/startup.sh")}", "sshKeys", "${var.ssh_user}:${file(var.ssh_pub_key)}"),
     var.metadata
   )}"
 

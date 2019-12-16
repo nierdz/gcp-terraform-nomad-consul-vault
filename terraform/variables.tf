@@ -31,7 +31,7 @@ variable instance_labels {
 }
 
 variable network {
-  default = "default"
+  default = "tncv-network"
 }
 
 variable access_config {
@@ -39,10 +39,6 @@ variable access_config {
   default = [
     {},
   ]
-}
-
-variable compute_image {
-  default = "tncv-image"
 }
 
 variable disk_type {
