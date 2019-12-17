@@ -1,12 +1,11 @@
 resource "google_compute_instance_template" "consul_vault" {
   name_prefix  = "consul-vault-"
-  machine_type = "${var.machine_type}"
-  region       = "${var.region}"
+  machine_type = var.machine_type
+  region       = var.region
   tags         = ["allow-ssh","consul-server"]
-  labels       = "${var.instance_labels}"
 
   network_interface {
-    network = "${var.network}"
+    network = var.network
     access_config {
     }
   }
@@ -16,7 +15,7 @@ resource "google_compute_instance_template" "consul_vault" {
     boot         = true
     source_image = "consul-vault-image"
     type         = "PERSISTENT"
-    disk_type    = "${var.disk_type}"
+    disk_type    = var.disk_type
     mode         = "READ_WRITE"
   }
 
@@ -24,10 +23,10 @@ resource "google_compute_instance_template" "consul_vault" {
     scopes = ["cloud-platform"]
   }
 
-  metadata = "${merge(
-    map("startup-script", "${file("${path.module}/../scripts/startup.sh")}", "sshKeys", "${var.ssh_user}:${file(var.ssh_pub_key)}"),
-    var.metadata
-  )}"
+  metadata = {
+    startup-script = "${file("${path.module}/../scripts/startup-consul-vault.sh")}"
+    sshKeys = "${var.ssh_user}:${file(var.ssh_pub_key)}"
+  }
 
   lifecycle {
     create_before_destroy = true
