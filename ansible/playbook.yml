@@ -1,11 +1,11 @@
 ---
-- name: Provision tncv image
+- name: Provision all images
   hosts: local
   become: true
   roles:
     - { role: docker, tags: ['docker'] }
     - { role: consul, tags: ['consul'] }
-    - { role: nomad, tags: ['nomad'] }
+    - { role: vault, tags: ['vault'] }
   vars:
     - consul_group_name: local
     - consul_node_role: server
@@ -22,3 +22,4 @@
     - nomad_consul_clients_service_name: "nomad-client"
     - nomad_node_role: "both"
     - nomad_node_name: "{{ ansible_hostname }}"
+    - vault_consul_token: "{{ consul_raw_key }}"
