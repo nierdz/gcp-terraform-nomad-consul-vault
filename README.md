@@ -29,7 +29,7 @@ source env.sh
 
 To check everything is good, you should try to list your glcoud configurations and you should have something like this:
 ```
-gcloud config configurations list 
+gcloud config configurations list
 NAME                 IS_ACTIVE  ACCOUNT                                             PROJECT              DEFAULT_ZONE  DEFAULT_REGION
 default              False
 terraform-nomad-consul-vault  True       nierdz@terraform-nomad-consul-vault.iam.gserviceaccount.com  terraform-nomad-consul-vault
