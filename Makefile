@@ -55,3 +55,10 @@ run-terraform: ## Run terraform init and apply
 		terraform init; \
 		terraform apply -auto-approve; \
 	)
+
+destroy-terraform: ## Run terraform destroy
+	$(info --> Run terraform destroy)
+	@( \
+		pushd terraform; \
+		terraform destroy -auto-approve; \
+	)
