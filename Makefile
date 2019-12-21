@@ -9,6 +9,17 @@ help: ## Print this help
 		| sort \
 		| awk 'BEGIN { FS = ":.*?## " }; { printf "\033[36m%-30s\033[0m %s\n", $$1, $$2 }'
 
+tests: ## Run all tests
+	$(info --> Run all tests)
+	@( \
+		source $(VIRTUALENV_DIR)/bin/activate; \
+		yamllint -c .yamllint.yml .; \
+		pre-commit run --all-files; \
+		pushd ansible; \
+		ansible-lint playbook.yml; \
+		ansible-playbook playbook.yml --syntax-check; \
+	)
+
 install: ## Install dependencies
 	$(info --> Install dependencies)
 	@( \
