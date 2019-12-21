@@ -6,7 +6,3 @@
 - src: https://github.com/nierdz/ansible-consul.git
   version: origin/feat/gce-auto-join
   name: consul
-
-- src: https://github.com/brianshumate/ansible-vault.git
-  version: v2.5.0
-  name: vault

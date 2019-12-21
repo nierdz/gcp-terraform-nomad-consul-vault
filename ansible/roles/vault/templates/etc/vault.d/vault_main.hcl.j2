@@ -1,0 +1,27 @@
+# {{ ansible_managed }}
+
+cluster_name = "{{ vault_cluster_name }}"
+max_lease_ttl = "{{ vault_max_lease_ttl }}"
+default_lease_ttl = "{{ vault_default_lease_ttl }}"
+
+disable_clustering = "False"
+cluster_addr = "http://{{ vault_cluster_address }}"
+api_addr = "http://{{ vault_api_address }}"
+
+plugin_directory = "{{ vault_plugin_path }}"
+
+listener "tcp" {
+  address = "{{ vault_address }}:{{ vault_port }}"
+  cluster_address = "{{ vault_cluster_address }}"
+  tls_disable = "true"
+}
+
+backend "consul" {
+  address = "127.0.0.1:8500"
+  path = "vault"
+  check_timeout = "5m"
+  service = "vault"
+    token = "{{ vault_consul_token }}"
+    scheme = "http"
+  }
+ui = true
