@@ -45,7 +45,7 @@ run-ansible: ## Launch ansible-playbook during a packer run
 run-packer: ## Build packer images
 	$(info --> Build packer images)
 	@( \
-		packer build -var "image_name=consul-vault-image" -on-error=abort packer/consul-vault-packer.json; \
+		packer build -var "image_name=consul-vault-image" -force -on-error=abort packer/consul-vault-packer.json; \
 	)
 
 run-terraform: ## Run terraform init and apply
