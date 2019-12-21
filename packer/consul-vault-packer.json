@@ -9,7 +9,7 @@
       "type": "googlecompute",
       "account_file": "{{ user `account_file` }}",
       "project_id": "{{ user `project_id` }}",
-      "source_image": "debian-9-stretch-v20191210",
+      "source_image": "debian-10-buster-v20191210",
       "ssh_username": "admin",
       "image_name": "{{ user `image_name` }}",
       "zone": "europe-west1-b"
