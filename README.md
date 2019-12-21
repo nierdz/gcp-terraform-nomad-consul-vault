@@ -7,6 +7,11 @@ This small project is a POC to run some kind of applications on GCP using some H
 - Consul
 - Vault
 
+## Requirements
+
+- You need to have terraform >0.12 installed and in your **PATH**
+- You need to have packer installed and in your **PATH**
+
 ### First, setup gcloud
 
 I will not explain this step in details cause this is not the interesting part of this tutorial and you can find plenty of informations online.
@@ -49,9 +54,18 @@ Enable versioning:
 gsutil versioning set on gs://${GCE_PROJECT}
 ```
 
-To use this bucket, we have [backend.tf](backend.tf)
+To use this bucket, we have [backend.tf](terraform/backend.tf)
 
-### Packer to bake image
+### Packer to bake images
+
+Now, we need to build images and for this, we'll use packer. Here is a task for this:
 ```
-packer build -var "image_name=tncv-image" tncv-packer.json
+make run-packer
 ```
+
+### Terraform to deploy everything
+
+To create all our infrastructure ine GCP, we'll use **terraform**. Here is task for this:
+```
+make run-terraform
+``
