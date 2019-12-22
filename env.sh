@@ -7,3 +7,4 @@ export GOOGLE_APPLICATION_CREDENTIALS=~/.gcloud/terraform-nomad-consul-vault.jso
 export GOOGLE_PROJECT=$GCE_PROJECT
 GCE_EMAIL=$(grep client_email $GCE_PEM_FILE_PATH | grep -oE "[0-9a-z\\-]*@[0-9a-z\\-]*\\.iam\\.gserviceaccount\\.com")
 export GCE_EMAIL
+export TF_VAR_project_name=$GCE_PROJECT

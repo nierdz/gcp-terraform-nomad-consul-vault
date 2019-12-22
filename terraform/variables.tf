@@ -6,7 +6,7 @@ variable "region" {
 
 variable "project_name" {
   type = string
-  default = "terraform-nomad-consul-vault"
+  default = ""
 }
 
 variable "ssh_user" {
