@@ -12,45 +12,55 @@ This small project is a POC to run some kind of applications on GCP using some H
 - You need to have terraform >0.12 installed and in your **PATH**
 - You need to have packer installed and in your **PATH**
 
-### First, setup gcloud
+### Setup `env.sh` and use it
+
+This file will be used to export some environment variables usefull to run **gcloud**, **terraform** and **packer**.
+You need to replace all occurences of `your-project-name` with `your-actual-project-name`.
+For example, I just named my GCP project `nomad-consul-vault` so I need to run this command:
+```
+sed -i 's/your-project-name/nomad-consul-vault/g' env.sh
+```
+
+As for now, you need to source this file before doing anything else, let's do it:
+```
+source env.sh
+```
+
+### Setup gcloud
 
 I will not explain this step in details cause this is not the interesting part of this tutorial and you can find plenty of informations online.
 
 1. You need to install [gcloud sdk](https://cloud.google.com/sdk/install)
-2. Go to Google cloud console and create a new project called `terraform-nomad-consul-vault`
+2. Go to Google cloud console and create a new project.
 3. Go to **IAM & admin**, then **Service Accounts** and create a service account with **Project owner** role.
-4. Create a json key associate to this service account and rename it to `terraform-nomad-consul-vault.json` (we will use this key to do everything related to this GCP project)
-5. Put this key inside `~/.gcloud/terraform-nomad-consul-vault.json` and setup your project with this bunch of gcloud commands:
+4. Create a json key associate to this service account and rename it to `your-actual-project-name.json` (this key will be used by gcloud)
+5. Put this key inside `~/.gcloud/your-actual-project-name.json` and setup your project with this bunch of gcloud commands:
 ```
-gcloud config configurations create terraform-nomad-consul-vault --no-activate
-export CLOUDSDK_ACTIVE_CONFIG_NAME=terraform-nomad-consul-vault
-gcloud --configuration terraform-nomad-consul-vault config set project terraform-nomad-consul-vault
-gcloud auth activate-service-account --key-file ~/.gcloud/terraform-nomad-consul-vault.json
-```
-6. Source `env.sh` to export some important environment variables and you should be ready to use **gcloud**
-```
-source env.sh
+gcloud config configurations create your-actual-project-name --no-activate
+gcloud --configuration your-actual-project-name config set project your-actual-project-name
+gcloud auth activate-service-account --key-file ~/.gcloud/your-actual-project-name.json
 ```
 
 To check everything is good, you should try to list your glcoud configurations and you should have something like this:
 ```
 gcloud config configurations list
-NAME                 IS_ACTIVE  ACCOUNT                                             PROJECT              DEFAULT_ZONE  DEFAULT_REGION
-default              False
-terraform-nomad-consul-vault  True       nierdz@terraform-nomad-consul-vault.iam.gserviceaccount.com  terraform-nomad-consul-vault
+NAME                IS_ACTIVE  ACCOUNT                                            PROJECT             DEFAULT_ZONE  DEFAULT_REGION
+default             False
+nomad-consul-vault  True       nierdz@nomad-consul-vault.iam.gserviceaccount.com  nomad-consul-vault
 ```
 
-And everytime you need to work on this project, just source `env.sh`.
+### Enable APIs
 
-### Next, we'll configure backend to store tfstate
+```
+gcloud services enable iam.googleapis.com
+gcloud services enable cloudkms.googleapis.com
+gcloud services enable cloudresourcemanager.googleapis.com
+```
 
-For this, we'll use a **GCP bucket**. To create it:
+### Configure bucket to store tfstate
+
 ```
 gsutil mb -p ${GCE_PROJECT} gs://${GCE_PROJECT}
-```
-
-Enable versioning:
-```
 gsutil versioning set on gs://${GCE_PROJECT}
 ```
 
@@ -63,9 +73,9 @@ Now, we need to build images and for this, we'll use packer. Here is a task for 
 make run-packer
 ```
 
-### Terraform to deploy everything
+### Terraform to create and deploy everything
 
-To create all our infrastructure ine GCP, we'll use **terraform**. Here is task for this:
+To create all our infrastructure in GCP, we'll use **terraform**. Here is task for this:
 ```
 make run-terraform
 ``
