@@ -63,7 +63,7 @@ run-terraform: ## Run terraform init and apply
 	$(info --> Run terraform init and apply)
 	@( \
 		pushd terraform; \
-		terraform init; \
+		terraform init -backend-config "bucket=$(TF_VAR_project_name)"; \
 		terraform apply -auto-approve; \
 	)
 
