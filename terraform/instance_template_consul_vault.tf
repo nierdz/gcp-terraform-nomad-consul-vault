@@ -20,6 +20,7 @@ resource "google_compute_instance_template" "consul_vault" {
   }
 
   service_account {
+    email  = google_service_account.server-admin.email
     scopes = ["cloud-platform"]
   }
 
