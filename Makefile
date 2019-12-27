@@ -15,6 +15,7 @@ tests: ## Run all tests
 		source $(VIRTUALENV_DIR)/bin/activate; \
 		yamllint -c .yamllint.yml .; \
 		pre-commit run --all-files; \
+		tflint terraform; \
 		pushd ansible; \
 		ansible-lint playbook.yml; \
 		ansible-playbook playbook.yml --syntax-check; \

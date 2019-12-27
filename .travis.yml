@@ -6,6 +6,9 @@ before_install:
       python-apt
       python-pip
       python-virtualenv
+  - wget https://github.com/terraform-linters/tflint/releases/download/v0.13.4/tflint_linux_amd64.zip -O /tmp/tflint.zip
+  - sudo unzip -d /usr/local/bin/ /tmp/tflint.zip
+  - rm /tmp/tflint.zip
   - make install
 
 script:
