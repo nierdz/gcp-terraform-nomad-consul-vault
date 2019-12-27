@@ -38,6 +38,7 @@
     },
     {
       "type": "shell",
+      "inline_shebang": "/bin/bash",
       "inline": [
         "sudo apt update",
         "sudo apt install -y make",
