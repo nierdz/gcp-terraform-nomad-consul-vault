@@ -89,4 +89,37 @@ make run-packer
 To create all our infrastructure in GCP, we'll use **terraform**. Here is task for this:
 ```
 make run-terraform
-``
+```
+
+### Init vault
+
+The first time you spawn your vault cluster, you got to initialize it. You just need to do it once on one node only. First, you need to list your server nodes with this gcloud command:
+```
+gcloud compute instances list --filter name:server-
+```
+
+You pick one of this list and connect to its external ip using `admin` user:
+```
+ssh admin@34.76.41.35
+```
+
+And you initialize vault with this command:
+```
+vault operator init
+```
+
+You should get something similar to this:
+```
+Recovery Key 1: 2ciGU9Gyb+rjixPZqguW4WS7GU9Stj1ygDQrOFnkzdDE
+Recovery Key 2: gXCdDOh+EJJB8Hc04z7N3VH/prBngtg7g+MHl1LEsEXN
+Recovery Key 3: b/sStKWsX/ogVvNRAKpiEm2fKQ1RHf2/kGf9w0jQ0UPO
+Recovery Key 4: WfsumtDgcU8QzBnSUHAvujdcSLJAE2DtkhSlPVhLw7iO
+Recovery Key 5: AQLZ5CYq4FXssnNgeBlol9VP++BV4MgI4Q9nc6kiSCBR
+
+Initial Root Token: s.SNGVFM1q5xJ4K6Bj46uIDNpc
+
+Success! Vault is initialized
+
+Recovery key initialized with 5 key shares and a key threshold of 3. Please
+securely distribute the key shares printed above.
+```
