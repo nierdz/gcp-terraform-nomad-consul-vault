@@ -1,0 +1,69 @@
+---
+- name: Create Vault user
+  user:
+    name: "{{ vault_user }}"
+    comment: "Vault user"
+    group: "{{ vault_group }}"
+    system: true
+  when: vault_manage_user | bool
+
+- name: Check Vault version # noqa 306
+  shell: >
+    vault version |
+    cut -d' ' -f2 |
+    tr -d 'v' |
+    grep -o {{ vault_version }}
+  args:
+    executable: /bin/bash
+  failed_when: false
+  changed_when: false
+  register: current_vault_version
+
+- name: Install Vault if needed
+  unarchive:
+    src: "https://releases.hashicorp.com/vault/{{ vault_version }}/vault_{{ vault_version }}_linux_amd64.zip"
+    dest: /usr/local/bin
+    remote_src: true
+    mode: 0755
+    owner: root
+    group: root
+  when: current_vault_version.stdout != vault_version
+
+- name: Create directories
+  file:
+    dest: "{{ item }}"
+    state: directory
+    owner: "{{ vault_user }}"
+    group: "{{ vault_group }}"
+  with_items:
+    - /etc/vault.d
+    - /usr/local/lib/vault/plugins
+    - /var/vault
+    - /var/run/vault
+
+- name: Vault main configuration
+  template:
+    src: etc/vault.d/vault_main.hcl.j2
+    dest: /etc/vault.d/vault_main.hcl
+    owner: "{{ vault_user }}"
+    group: "{{ vault_group }}"
+    mode: "0400"
+
+- name: Create systemd service file
+  template:
+    src: lib/systemd/system/vault.service.j2
+    dest: /lib/systemd/system/vault.service
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Disable Vault at boot
+  service:
+    name: vault
+    state: stopped
+    enabled: false
+
+- name: Add VAULT_ADDR to /etc/environment
+  lineinfile:
+    path: "/etc/environment"
+    line: "VAULT_ADDR='http://{{ vault_address }}:{{ vault_port }}'"

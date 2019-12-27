@@ -1,6 +1,6 @@
 terraform {
   backend "gcs" {
-    bucket = "terraform-nomad-consul-vault"
+    bucket = var.project_name
     prefix = "terraform/state"
   }
 }

@@ -9,7 +9,7 @@
       "type": "googlecompute",
       "account_file": "{{ user `account_file` }}",
       "project_id": "{{ user `project_id` }}",
-      "source_image": "debian-9-stretch-v20190514",
+      "source_image": "debian-10-buster-v20191210",
       "ssh_username": "admin",
       "image_name": "{{ user `image_name` }}",
       "zone": "europe-west1-b"
@@ -18,16 +18,33 @@
   "provisioners": [
     {
       "type": "file",
-      "source": "./",
-      "destination": "~/"
+      "source": "ansible",
+      "destination": "~/ansible"
+    },
+    {
+      "type": "file",
+      "source": "env.sh",
+      "destination": "~/env.sh"
+    },
+    {
+      "type": "file",
+      "source": "Makefile",
+      "destination": "~/Makefile"
+    },
+    {
+      "type": "file",
+      "source": "requirements.txt",
+      "destination": "~/requirements.txt"
     },
     {
       "type": "shell",
+      "inline_shebang": "/bin/bash",
       "inline": [
         "sudo apt update",
         "sudo apt install -y make",
         "make install",
-        "venv/bin/ansible-playbook playbook.yml"
+        "cd ansible",
+        "TAGS=consul,vault make -f ../Makefile run-ansible"
       ]
     }
   ]

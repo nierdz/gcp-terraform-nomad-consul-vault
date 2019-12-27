@@ -1,0 +1,8 @@
+---
+- src: https://github.com/nierdz/ansible-role-docker
+  version: v1.0.3
+  name: docker
+
+- src: https://github.com/nierdz/ansible-consul.git
+  version: origin/feat/gce-auto-join
+  name: consul

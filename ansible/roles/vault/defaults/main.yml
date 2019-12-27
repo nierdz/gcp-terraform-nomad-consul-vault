@@ -1,0 +1,47 @@
+---
+vault_version: "1.3.0"
+
+vault_bin_path: /usr/local/bin
+vault_config_path: /etc/vault.d
+vault_plugin_path: /usr/local/lib/vault/plugins
+vault_data_path: /var/vault
+vault_run_path: /var/run/vault
+vault_home: "/home/{{ vault_user }}"
+
+vault_manage_user: true
+vault_user: vault
+vault_manage_group: false
+vault_group: bin
+
+vault_group_name: vault_instances
+vault_cluster_name: dc1
+vault_datacenter: dc1
+vault_log_level: "{{ lookup('env','VAULT_LOG_LEVEL') | default('info', true) }}"
+vault_iface: "{{ lookup('env','VAULT_IFACE') | default(ansible_default_ipv4.interface, true) }}"
+vault_address: "{{ hostvars[inventory_hostname]['ansible_'+vault_iface]['ipv4']['address'] }}"
+vault_ui: "{{ lookup('env', 'VAULT_UI') | default(true, true) }}"
+vault_port: 8200
+vault_main_config: "{{ vault_config_path }}/vault_main.hcl"
+vault_main_configuration_template: vault_main_configuration.hcl.j2
+
+vault_backend: consul
+vault_backend_consul: vault_backend_consul.j2
+vault_backend_file: vault_backend_file.j2
+vault_backend_etcd: vault_backend_etcd.j2
+vault_backend_s3: vault_backend_s3.j2
+vault_backend_dynamodb: vault_backend_dynamodb.j2
+
+vault_cluster_address: "{{ hostvars[inventory_hostname]['ansible_'+vault_iface]['ipv4']['address'] }}:{{ (vault_port | int) + 1}}"
+vault_api_address: "{{ vault_redirect_address | default(hostvars[inventory_hostname]['ansible_'+vault_iface]['ipv4']['address']) }}:{{ vault_port }}"
+
+vault_max_lease_ttl: "768h"
+vault_default_lease_ttl: "768h"
+
+vault_gkms: false
+vault_backend_gkms: vault_seal_gcpkms.j2
+vault_gkms_project: ''
+vault_gkms_credentials_src_file: ''
+vault_gkms_credentials: '/home/vault/vault-kms.json'
+vault_gkms_region: 'global'
+vault_gkms_key_ring: 'vault'
+vault_gkms_crypto_key: 'vault_key'

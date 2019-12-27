@@ -7,51 +7,119 @@ This small project is a POC to run some kind of applications on GCP using some H
 - Consul
 - Vault
 
-### First, setup gcloud
+## Requirements
 
-I will not explain this step in details cause this is not the interesting part of this tutorial and you can find plenty of informations online.
+- You need to have terraform >0.12 installed and in your **PATH**
+- You need to have packer installed and in your **PATH**
 
-1. You need to install [gcloud sdk](https://cloud.google.com/sdk/install)
-2. Go to Google cloud console and create a new project called `terraform-nomad-consul-vault`
-3. Go to **IAM & admin**, then **Service Accounts** and create a service account with **Project owner** role.
-4. Create a json key associate to this service account and rename it to `terraform-nomad-consul-vault.json` (we will use this key to do everything related to this GCP project)
-5. Put this key inside `~/.gcloud/terraform-nomad-consul-vault.json` and setup your project with this bunch of gcloud commands:
+### Setup `env.sh` and use it
+
+This file will be used to export some environment variables usefull to run **gcloud**, **terraform** and **packer**.
+You need to replace all occurences of `nomad-consul-vault` with `your-actual-project-name`.
+For example, I just named my GCP project `un-nom-de-projet` so I need to run this command:
 ```
-gcloud config configurations create terraform-nomad-consul-vault --no-activate
-export CLOUDSDK_ACTIVE_CONFIG_NAME=terraform-nomad-consul-vault
-gcloud --configuration terraform-nomad-consul-vault config set project terraform-nomad-consul-vault
-gcloud auth activate-service-account --key-file ~/.gcloud/terraform-nomad-consul-vault.json
+sed -i 's/nomad-consul-vault/un-nom-de-projet/g' env.sh
 ```
-6. Source `env.sh` to export some important environment variables and you should be ready to use **gcloud**
+
+You can also change `TF_VAR_region` to use another region.
+
+As for now, you need to source this file before doing anything else, let's do it:
 ```
 source env.sh
 ```
 
+### Setup gcloud
+
+I will not explain this step in details cause this is not the interesting part of this tutorial and you can find plenty of informations online.
+
+1. You need to install [gcloud sdk](https://cloud.google.com/sdk/install)
+2. Go to Google cloud console and create a new project.
+3. Go to **IAM & admin**, then **Service Accounts** and create a service account with **Project owner** role.
+4. Create a json key associate to this service account and rename it to `your-actual-project-name.json` (this key will be used by gcloud)
+5. Put this key inside `~/.gcloud/your-actual-project-name.json` and setup your project with this bunch of gcloud commands:
+```
+gcloud config configurations create your-actual-project-name --no-activate
+gcloud --configuration your-actual-project-name config set project your-actual-project-name
+gcloud auth activate-service-account --key-file ~/.gcloud/your-actual-project-name.json
+```
+
 To check everything is good, you should try to list your glcoud configurations and you should have something like this:
 ```
-gcloud config configurations list 
-NAME                 IS_ACTIVE  ACCOUNT                                             PROJECT              DEFAULT_ZONE  DEFAULT_REGION
-default              False
-terraform-nomad-consul-vault  True       nierdz@terraform-nomad-consul-vault.iam.gserviceaccount.com  terraform-nomad-consul-vault
+gcloud config configurations list
+NAME                IS_ACTIVE  ACCOUNT                                            PROJECT             DEFAULT_ZONE  DEFAULT_REGION
+default             False
+nomad-consul-vault  True       nierdz@nomad-consul-vault.iam.gserviceaccount.com  nomad-consul-vault
 ```
 
-And everytime you need to work on this project, just source `env.sh`.
+### Enable APIs
 
-### Next, we'll configure backend to store tfstate
+```
+gcloud services enable iam.googleapis.com
+gcloud services enable cloudkms.googleapis.com
+gcloud services enable cloudresourcemanager.googleapis.com
+```
 
-For this, we'll use a **GCP bucket**. To create it:
+### Configure bucket to store tfstate
+
 ```
 gsutil mb -p ${GCE_PROJECT} gs://${GCE_PROJECT}
-```
-
-Enable versioning:
-```
 gsutil versioning set on gs://${GCE_PROJECT}
 ```
 
-To use this bucket, we have [backend.tf](backend.tf)
+To use this bucket, we have [backend.tf](terraform/backend.tf)
 
-### Packer to bake image
+### Google cloud KMS
+
+You can either setup a keyring and a key to unseal vault via terraform or via CLI using **glcoud**. I prefer **glcoud** method as keyring and key can not be deleted quickly so it's better to leave this ressources off terraform if you want to create and destroy your infrastructure several times on the same GCP project. Here is a make task to do it:
 ```
-packer build -var "image_name=tncv-image" tncv-packer.json
+make create-key
+```
+
+If you only want to build this project once and never use `terraform destroy` you can uncomment lines related to `google_kms_key_ring` and `google_kms_crypto_key` in [iam.tf](terraform/iam.tf).
+
+### Packer to bake images
+
+Now, we need to build images and for this, we'll use packer. Here is a task for this:
+```
+make run-packer
+```
+
+### Terraform to create and deploy everything
+
+To create all our infrastructure in GCP, we'll use **terraform**. Here is task for this:
+```
+make run-terraform
+```
+
+### Init vault
+
+The first time you spawn your vault cluster, you got to initialize it. You just need to do it once on one node only. First, you need to list your server nodes with this gcloud command:
+```
+gcloud compute instances list --filter name:server-
+```
+
+You pick one of this list and connect to its external ip using `admin` user:
+```
+ssh admin@34.76.41.35
+```
+
+And you initialize vault with this command:
+```
+vault operator init
+```
+
+You should get something similar to this:
+```
+Recovery Key 1: 2ciGU9Gyb+rjixPZqguW4WS7GU9Stj1ygDQrOFnkzdDE
+Recovery Key 2: gXCdDOh+EJJB8Hc04z7N3VH/prBngtg7g+MHl1LEsEXN
+Recovery Key 3: b/sStKWsX/ogVvNRAKpiEm2fKQ1RHf2/kGf9w0jQ0UPO
+Recovery Key 4: WfsumtDgcU8QzBnSUHAvujdcSLJAE2DtkhSlPVhLw7iO
+Recovery Key 5: AQLZ5CYq4FXssnNgeBlol9VP++BV4MgI4Q9nc6kiSCBR
+
+Initial Root Token: s.SNGVFM1q5xJ4K6Bj46uIDNpc
+
+Success! Vault is initialized
+
+Recovery key initialized with 5 key shares and a key threshold of 3. Please
+securely distribute the key shares printed above.
 ```
