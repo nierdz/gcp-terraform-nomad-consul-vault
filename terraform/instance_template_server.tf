@@ -1,8 +1,8 @@
-resource "google_compute_instance_template" "consul_vault" {
-  name_prefix  = "consul-vault-"
+resource "google_compute_instance_template" "server-it" {
+  name_prefix  = "server-"
   machine_type = var.machine_type
   region       = var.region
-  tags         = ["allow-ssh","consul-server"]
+  tags         = ["consul-server"]
 
   network_interface {
     network = var.network

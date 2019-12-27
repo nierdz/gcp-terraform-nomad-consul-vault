@@ -20,8 +20,8 @@ resource "google_compute_firewall" "tncv_ssh" {
   network = google_compute_network.tncv_network.self_link
 
   allow {
-    protocol           = "tcp"
-    ports              = ["22"]
+    protocol = "tcp"
+    ports    = ["22"]
   }
 
   source_ranges = ["0.0.0.0/0"]
@@ -34,8 +34,8 @@ resource "google_compute_firewall" "tncv_consul_tcp" {
   network = google_compute_network.tncv_network.self_link
 
   allow {
-    protocol           = "tcp"
-    ports              = ["8300", "8301", "8302", "8500", "8600"]
+    protocol = "tcp"
+    ports    = ["8300", "8301", "8302", "8500", "8600"]
   }
 
   source_tags = ["consul-server"]
@@ -49,8 +49,8 @@ resource "google_compute_firewall" "tncv_consul_udp" {
   network = google_compute_network.tncv_network.self_link
 
   allow {
-    protocol           = "udp"
-    ports              = ["8301", "8302", "8600"]
+    protocol = "udp"
+    ports    = ["8301", "8302", "8600"]
   }
 
   source_tags = ["consul-server"]
@@ -64,8 +64,8 @@ resource "google_compute_firewall" "tncv_consul_http" {
   network = google_compute_network.tncv_network.self_link
 
   allow {
-    protocol           = "tcp"
-    ports              = ["8500"]
+    protocol = "tcp"
+    ports    = ["8500"]
   }
 
   source_ranges = ["0.0.0.0/0"]

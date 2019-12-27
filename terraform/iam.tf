@@ -16,17 +16,17 @@ resource "google_service_account" "server-admin" {
 #  rotation_period = "86400s"
 #}
 
-resource "google_kms_key_ring_iam_binding" "vault_iam_kms_binding" {
+resource "google_kms_key_ring_iam_binding" "vault-iam-kms-binding" {
   key_ring_id = format("%s/%s/tncv-key-ring", var.project_name, var.region)
-  role = "roles/owner"
+  role        = "roles/owner"
 
   members = [
     "serviceAccount:${google_service_account.server-admin.email}",
   ]
 }
 
-resource "google_project_iam_member" "project" {
+resource "google_project_iam_member" "iam-admin-member" {
   project = var.project_name
   role    = "roles/editor"
-  member = "serviceAccount:${google_service_account.server-admin.email}"
+  member  = "serviceAccount:${google_service_account.server-admin.email}"
 }
