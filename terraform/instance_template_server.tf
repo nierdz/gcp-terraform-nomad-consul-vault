@@ -13,7 +13,7 @@ resource "google_compute_instance_template" "server-it" {
   disk {
     auto_delete  = true
     boot         = true
-    source_image = "consul-vault-image"
+    source_image = "server-image"
     type         = "PERSISTENT"
     disk_type    = var.disk_type
     mode         = "READ_WRITE"
