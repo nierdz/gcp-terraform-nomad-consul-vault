@@ -23,6 +23,11 @@
     },
     {
       "type": "file",
+      "source": "env.sh",
+      "destination": "~/env.sh"
+    },
+    {
+      "type": "file",
       "source": "Makefile",
       "destination": "~/Makefile"
     },

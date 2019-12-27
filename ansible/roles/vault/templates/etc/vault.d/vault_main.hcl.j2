@@ -24,4 +24,12 @@ backend "consul" {
     token = "{{ vault_consul_token }}"
     scheme = "http"
   }
+
+seal "gcpckms" {
+  project     = "{{ vault_gce_project }}"
+  region      = "{{ vault_gce_region }}"
+  key_ring    = "tncv-key-ring"
+  crypto_key  = "vault-key"
+}
+
 ui = true

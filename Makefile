@@ -61,6 +61,7 @@ run-ansible: ## Launch ansible-playbook during a packer run
 	$(info --> Launch ansible-playbook during a packer run)
 	@( \
 		source $(VIRTUALENV_DIR)/bin/activate; \
+		source ../env.sh; \
 		ansible-playbook -t $(TAGS) playbook.yml; \
 	)
 

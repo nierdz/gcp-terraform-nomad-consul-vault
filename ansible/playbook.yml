@@ -23,3 +23,5 @@
     - nomad_node_role: "both"
     - nomad_node_name: "{{ ansible_hostname }}"
     - vault_consul_token: "{{ consul_raw_key }}"
+    - vault_gce_project: "{{ lookup('env','GCE_PROJECT') }}"
+    - vault_gce_region: "{{ lookup('env','TF_VAR_region') }}"
