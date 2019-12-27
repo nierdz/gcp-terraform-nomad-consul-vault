@@ -46,6 +46,17 @@ install-ansible: ## Install ansible via pip
 		ansible-galaxy install -r ansible/requirements.yml -p ansible/vendor/roles ; \
 	)
 
+create-key: ## Create a keyring and a key to unseal vault
+	$(info --> Create a keyring and a key to unseal vault )
+	@( \
+		source env.sh; \
+		gcloud kms keyrings create tncv-key-ring --location $(TF_VAR_region); \
+		gcloud kms keys create vault-key --keyring tncv-key-ring \
+		  --purpose=encryption --location $(TF_VAR_region) \
+			--rotation-period 86400s \
+			--next-rotation-time $(shell date -d "+1 hour" +'%Y-%m-%dT%T'); \
+	)
+
 run-ansible: ## Launch ansible-playbook during a packer run
 	$(info --> Launch ansible-playbook during a packer run)
 	@( \

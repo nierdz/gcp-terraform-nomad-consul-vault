@@ -66,6 +66,15 @@ gsutil versioning set on gs://${GCE_PROJECT}
 
 To use this bucket, we have [backend.tf](terraform/backend.tf)
 
+### Google cloud KMS
+
+You can either setup a keyring and a key to unseal vault via terraform or via CLI using **glcoud**. I prefer **glcoud** method as keyring and key can not be deleted quickly so it's better to leave this ressources off terraform if you want to create and destroy your infrastructure several times on the same GCP project. Here is a make task to do it:
+```
+make create-key
+```
+
+If you only want to build this project once and never use `terraform destroy` you can uncomment lines related to `google_kms_key_ring` and `google_kms_crypto_key` in [iam.tf](terraform/iam.tf).
+
 ### Packer to bake images
 
 Now, we need to build images and for this, we'll use packer. Here is a task for this:
