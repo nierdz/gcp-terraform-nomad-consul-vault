@@ -15,11 +15,13 @@ This small project is a POC to run some kind of applications on GCP using some H
 ### Setup `env.sh` and use it
 
 This file will be used to export some environment variables usefull to run **gcloud**, **terraform** and **packer**.
-You need to replace all occurences of `your-project-name` with `your-actual-project-name`.
-For example, I just named my GCP project `nomad-consul-vault` so I need to run this command:
+You need to replace all occurences of `nomad-consul-vault` with `your-actual-project-name`.
+For example, I just named my GCP project `un-nom-de-projet` so I need to run this command:
 ```
-sed -i 's/your-project-name/nomad-consul-vault/g' env.sh
+sed -i 's/nomad-consul-vault/un-nom-de-projet/g' env.sh
 ```
+
+You can also change `TF_VAR_region` to use another region.
 
 As for now, you need to source this file before doing anything else, let's do it:
 ```
