@@ -69,12 +69,14 @@ run-ansible: ## Launch ansible-playbook during a packer run
 run-packer: ## Build packer images
 	$(info --> Build packer images)
 	@( \
+		source env.sh; \
 		packer build -var "image_name=server-image" -force -on-error=abort packer/server-packer.json; \
 	)
 
 run-terraform: ## Run terraform init and apply
 	$(info --> Run terraform init and apply)
 	@( \
+		source env.sh; \
 		pushd terraform; \
 		terraform init -backend-config "bucket=$(TF_VAR_project_name)"; \
 		terraform apply -auto-approve; \

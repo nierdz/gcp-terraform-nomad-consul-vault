@@ -5,7 +5,6 @@
     comment: "Vault user"
     group: "{{ vault_group }}"
     system: true
-  when: vault_manage_user | bool
 
 - name: Check Vault version # noqa 306
   shell: >

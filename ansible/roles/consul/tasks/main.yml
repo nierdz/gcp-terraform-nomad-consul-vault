@@ -1,0 +1,82 @@
+---
+- name: Install unzip
+  apt:
+    name: unzip
+    state: present
+  register: firefox_installed
+  until: firefox_installed is success
+  retries: 10
+  delay: 2
+
+- name: Create Consul user
+  user:
+    name: "{{ consul_user }}"
+    comment: "Consul user"
+    group: "{{ consul_group }}"
+    system: true
+
+- name: Check consul version # noqa 306
+  shell: >
+    consul version |
+    head -n1 |
+    cut -d' ' -f 2 |
+    tr -d 'v' |
+    grep -o {{ consul_version }}
+  args:
+    executable: /bin/bash
+  failed_when: false
+  changed_when: false
+  register: current_consul_version
+
+- name: Install Consul if needed
+  unarchive:
+    src: "https://releases.hashicorp.com/consul/{{ consul_version }}/consul_{{ consul_version }}_linux_amd64.zip"
+    dest: /usr/local/bin
+    remote_src: true
+    mode: 0755
+    owner: root
+    group: root
+  when: current_consul_version.stdout != consul_version
+
+- name: Create directories
+  file:
+    dest: "{{ item }}"
+    state: directory
+    owner: "{{ consul_user }}"
+    group: "{{ consul_group }}"
+    mode: 0700
+  with_items:
+    - /etc/consul
+    - /etc/consul/consul.d
+    - /var/consul
+    - /var/log/consul
+
+- name: Create run directory
+  file:
+    dest: /var/run/consul
+    state: directory
+    owner: "{{ consul_user }}"
+    group: "{{ consul_group }}"
+    mode: 0750
+
+- name: Consul main configuration
+  template:
+    src: etc/consul/config.json.j2
+    dest: /etc/consul/config.json
+    owner: "{{ consul_user }}"
+    group: "{{ consul_group }}"
+    mode: "0644"
+
+- name: Create systemd service file
+  template:
+    src: lib/systemd/system/consul.service.j2
+    dest: /lib/systemd/system/consul.service
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Disable Consul at boot
+  service:
+    name: consul
+    state: stopped
+    enabled: false
